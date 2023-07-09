@@ -2,6 +2,7 @@
 extends Control
 
 signal update_overlay
+signal layer_changed
 
 # The maximum individual tiles the overlay will draw before shortcutting the display
 # To prevent editor lag when drawing large rectangles or filling large areas
@@ -19,6 +20,8 @@ const TERRAIN_PROPERTIES_SCENE := preload("res://addons/better-terrain/editor/Te
 @onready var paint_terrain := $VBoxContainer/Toolbar/PaintTerrain
 @onready var select_tiles := $VBoxContainer/Toolbar/SelectTiles
 
+@onready var highlight_layer := $VBoxContainer/Toolbar/HighlightLayer
+
 @onready var zoom_slider := $VBoxContainer/Toolbar/Zoom
 
 @onready var clean_button := $VBoxContainer/Toolbar/Clean
@@ -32,6 +35,8 @@ const TERRAIN_PROPERTIES_SCENE := preload("res://addons/better-terrain/editor/Te
 
 @onready var terrain_tree := $VBoxContainer/HSplitContainer/VBoxContainer/Panel/Tree
 @onready var tile_view := $VBoxContainer/HSplitContainer/Panel/ScrollArea/TileView
+
+@onready var tme_panel := $TmePanel
 
 @onready var terrain_icons := [
 	load("res://addons/better-terrain/icons/MatchTiles.svg"),
@@ -77,6 +82,7 @@ func _ready() -> void:
 	rectangle_button.icon = get_theme_icon("Rectangle", "EditorIcons")
 	fill_button.icon = get_theme_icon("Bucket", "EditorIcons")
 	select_tiles.icon = get_theme_icon("ToolSelect", "EditorIcons")
+	highlight_layer.icon = get_theme_icon("TileMapHighlightSelected", "EditorIcons")
 	add_terrain_button.icon = get_theme_icon("Add", "EditorIcons")
 	edit_terrain_button.icon = get_theme_icon("Tools", "EditorIcons")
 	move_up_button.icon = get_theme_icon("ArrowUp", "EditorIcons")
@@ -380,6 +386,11 @@ func _on_bit_button_pressed(button: BaseButton) -> void:
 
 func _on_layer_options_item_selected(index) -> void:
 	layer = index
+	layer_changed.emit()
+
+
+func _on_highlight_layer_pressed():
+	layer_changed.emit()
 
 
 func _on_paste_occurred():
