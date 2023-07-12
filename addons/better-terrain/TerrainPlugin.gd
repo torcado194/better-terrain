@@ -25,6 +25,11 @@ func _enter_tree() -> void:
 					button.button_pressed = false
 				)
 				break
+		
+		button.connect("pressed", func():
+			if not button.button_pressed and not dock.visible:
+				editors[0].visible = false
+		)
 
 
 func _exit_tree() -> void:
